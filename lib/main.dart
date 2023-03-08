@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:todo/pages/select_emotion.dart';
-import 'package:todo/pages/select_gratitude.dart';
-import 'package:todo/pages/write_gratitude.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:todo/screens/emotion.dart';
+import 'package:todo/screens/home.dart';
+import 'package:todo/screens/write.dart';
 
-void main() {
+void main() async{
+  await initializeDateFormatting();
   runApp(const MyApp());
 }
 
@@ -13,12 +15,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "MyApp",
-      home: WriteGratitudePage(),
-      initialRoute: '/select_gratitude',
+      home: HomeScreen(),
+      initialRoute: '/home',
       routes: {
-        '/write_gratitude': (context) => WriteGratitudePage(),
-        '/select_emotion' : (context) => SelectEmotionPage(),
-        '/select_gratitude' : (context) => SelectGratitudePage()
+        '/home' : (context) => HomeScreen(),
+        '/write': (context) => WriteScreen(),
+        '/emotion' : (context) => EmotionScreen()
       },
     );
   }

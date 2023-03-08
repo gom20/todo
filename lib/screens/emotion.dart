@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:todo/screens/home.dart';
 
-class SelectEmotionPage extends StatelessWidget {
-  const SelectEmotionPage({Key? key}) : super(key: key);
+class EmotionScreen extends StatelessWidget {
+  const EmotionScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,12 @@ class SelectEmotionPage extends StatelessWidget {
               ),
               TextButton(
                 onPressed: (){
-                  Navigator.pushNamed(context, '/select_gratitude');
+                  // Navigator.pushNamed(context, '/home');
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (BuildContext context){
+                    return HomeScreen();
+                  }), (r){
+                    return false;
+                  });
                 },
                 child: Text("다음")
               ),
