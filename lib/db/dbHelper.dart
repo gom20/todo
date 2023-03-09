@@ -25,6 +25,17 @@ class DBHelper {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  Future<List<Gratitude>> selectAllGratitude() async {
+    final db = await database;
+
+    final List<Map<String, dynamic>> maps = (await db.query('Gratitude'));
+
+    return List.generate(maps.length, (index) => Gratitude(
+        id: maps[index]['id'],
+        note: maps[index]['note']
+    ));
+  }
+
 
   Future<Gratitude> selectGratitude(int id) async {
     final db = await database;

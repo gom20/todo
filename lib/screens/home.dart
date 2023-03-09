@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:todo/db/dbHelper.dart';
-import 'dart:developer';
-
 import 'package:todo/models/gratitude.dart';
+import 'package:todo/screens/calendar.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,106 +13,86 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late DBHelper _dbHelper ;
-
-  DateTime selectedDay = DateTime(
-    DateTime.now().year,
-    DateTime.now().month,
-    DateTime.now().day,
-  );
-  DateTime focusedDay = DateTime.now();
-
-  @override
-  void initState(){
-    super.initState();
-    _dbHelper = DBHelper();
-  }
-
   @override
   Widget build(BuildContext context) {
+    int selectedDay = int.parse(DateFormat('yyyyMMdd').format(DateTime.now()));
+
+    final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, dynamic>{}) as Map;
+    final textFieldController = TextEditingController();
+
+    @override
+    void dispose() {
+      textFieldController.dispose();
+      super.dispose();
+    }
+
     return Scaffold(
       appBar: AppBar(
-          title: Text("캘린더 페이지")
+        centerTitle: true,
+        title: Text("오늘도 감사해"),
+        titleTextStyle: TextStyle(
+          fontFamily: 'Pretendard',
+          color: Color(0xffE69E82),
+          fontWeight: FontWeight.w500,
+          fontSize: 20.0
+        ),
+        backgroundColor: Colors.white10,
+        elevation: 0,
       ),
       body: Center(
         child: Padding(
           padding: EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children:[
-                    TableCalendar(
-                      locale: 'ko_KR',
-                      firstDay: DateTime.utc(2010, 10, 16),
-                      lastDay: DateTime.utc(2030, 3, 14),
-                      focusedDay: focusedDay,
-                      onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
-                        // 선택된 날짜의 상태를 갱신합니다.
-                        setState((){
-                          this.selectedDay = selectedDay;
-                          this.focusedDay = focusedDay;
-                        });
-                      },
-                      selectedDayPredicate: (DateTime day) {
-                        // selectedDay 와 동일한 날짜의 모양을 바꿔줍니다.
-                        return isSameDay(selectedDay, day);
-                      },
-                      headerStyle: HeaderStyle(
-                        titleCentered: true,
-                        titleTextFormatter: (date, locale) =>
-                            DateFormat.yMMMMd(locale).format(date),
-                        formatButtonVisible: false,
-                        titleTextStyle: TextStyle(
-                            fontSize: 20.0,
-                            color: Colors.blue
+          child:
+          Column(
+              children: [
+                Flexible(
+                  flex: 2,
+                  child: Text(
+                    DateFormat.yMMMd('ko_KR').format(DateTime.parse('$selectedDay')),
+                    style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w300,
+                      color: Color(0xffE69E82),
+                      fontSize: 30.0
+                    ),
+                  ),
+                ),
+                Flexible(
+                  flex: 8,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: textFieldController,
+                          decoration: InputDecoration(
+                            labelText: 'Input',
+                          ),
                         ),
                       ),
-                      calendarStyle: CalendarStyle(
-                        isTodayHighlighted: true,
-                        selectedDecoration: BoxDecoration(
-                          color: Colors.blue,
-                          shape: BoxShape.circle,
-                        ),
-                        selectedTextStyle: TextStyle(color: Colors.white),
-                        todayDecoration: BoxDecoration(
-                          color: Colors.purpleAccent,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      '감사 일기',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    Container(
-                        child: FutureBuilder(
-                          future: _dbHelper.selectGratitude(int.parse(DateFormat('yyyyMMdd').format(selectedDay))),
-                          builder: (context, snapshot) {
-                            if(snapshot.hasData){
-                              String? note = snapshot.data?.note;
-                              return Text('$note');
-                            } else {
-                              return Text('데이터를 입력하세요');
-                            }
-                          },
-                        )
-                    )
-                  ]
-              ),
-              TextButton(
-                  onPressed: (){
-                    Navigator.pushNamed(context, '/write', arguments: {
-                      'id': int.parse(DateFormat('yyyyMMdd').format(selectedDay))
-                    });
-                  },
-                  child: Text("감사일기쓰기")
-              ),
-            ],
+                    ],
+                  ),
+                ),
+                Flexible(
+                  flex: 2,
+                  child: TextButton(
+                    onPressed: (){
+                      DBHelper dbHelper = DBHelper();
+                      dbHelper.insertGratitude(Gratitude(id: int.parse(DateFormat('yyyyMMdd').format(DateTime.now())), note: textFieldController.text));
+                      Navigator.pushNamed(context, '/calendar');
+                      // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (BuildContext context){
+                      //   return CalendarScreen();
+                      // }), (r){
+                      //   return false;
+                      // });
+                    },
+                    child: Text("다음"),
+                  ),
+                ),
+              ]
           ),
         ),
       ),
     );
   }
 }
-
