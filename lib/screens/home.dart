@@ -68,52 +68,60 @@ class _HomeScreenState extends State<HomeScreen> {
           color: Colors.transparent,
           child: Center(
             child: Padding(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.all(25),
               child:
               Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Flexible(
-                    flex: 2,
-                    child: Container(
-                      child: Text(
-                        DateFormat('yyyy.MM.dd').format(
-                            DateTime.parse('$selectedDay')),
-                        style: TextStyle(
-                            fontFamily: 'NotoSerifKR',
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black87,
-                            fontSize: 30.0
+                  SizedBox(
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
+                          child: Text(
+                            DateFormat.yMMMd().format(
+                                DateTime.parse('$selectedDay')),
+                            style: TextStyle(
+                                fontFamily: 'NotoSerifKR',
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                                fontSize: 30.0
+                            ),
+                          ),
                         ),
-                      ),
-                    )
+                        Text("감사한 마음을 기록해보세요.",
+                          style: TextStyle(
+                            color: Colors.black54,
+                          )
+                        )
+                      ],
+                    ),
+
                   ),
-                  Flexible(
-                    flex: 8,
+                  SizedBox(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
+                        SizedBox(
                             width: double.infinity,
-                            padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                             child: Text("오늘의 감사함",
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontFamily: 'NotoSerifKR',
                                 fontWeight: FontWeight.w500,
-                                fontSize: 13,
+                                fontSize: 15,
                               ),
                             )
                         ),
                         Container(
-                          margin: EdgeInsets.all(10),
+                          margin: EdgeInsets.fromLTRB(0, 10, 0, 30),
                           decoration: BoxDecoration(
                             color: Colors.white70,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: TextField(
                             keyboardType: TextInputType.multiline,
-                            maxLines: 4,
+                            maxLines: 6,
                             cursorColor: Colors.brown,
                             decoration: InputDecoration(
                               hintStyle: TextStyle(
@@ -126,27 +134,26 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
-                        Container(
+                        SizedBox(
                           width: double.infinity,
-                          padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                           child: Text("오늘의 다짐",
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               fontFamily: 'NotoSerifKR',
                               fontWeight: FontWeight.w500,
-                              fontSize: 13,
+                              fontSize: 15,
                             ),
                           )
                         ),
                         Container(
-                          margin: EdgeInsets.all(10),
+                          margin: EdgeInsets.fromLTRB(0, 10, 0, 15),
                           decoration: BoxDecoration(
                             color: Colors.white70,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: TextField(
                             keyboardType: TextInputType.multiline,
-                            maxLines: 4,
+                            maxLines: 6,
                             cursorColor: Colors.brown,
                             decoration: InputDecoration(
                               hintStyle: TextStyle(
@@ -162,12 +169,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
-                  Flexible(
-                      flex: 2,
+                  SizedBox(
                       child: Container(
                         width: double.infinity,
                         height: 40.0,
-                        margin: EdgeInsets.all(10),
                         child: ElevatedButton(
                           onPressed: () {
                             debugPrint('ElevatedButton Clicked');
@@ -206,12 +211,10 @@ class _HomeScreenState extends State<HomeScreen> {
           selectedLabelStyle: TextStyle(
             fontFamily: 'Pretendard',
             fontWeight: FontWeight.w500,
-            fontSize: 11,
           ),
           unselectedLabelStyle: TextStyle(
             fontFamily: 'Pretendard',
             fontWeight: FontWeight.w400,
-            fontSize: 10,
           ),
           onTap: _onItemTapped,
         ),
