@@ -40,7 +40,7 @@ dependencies:
   path_provider: ^2.0.13
   path: ^1.8.0
   intl: ^0.18.0
-  flutter_native_splash: ^2.2.19
+  flutter_svg: ^1.0.1
 
 
 dev_dependencies:
@@ -62,6 +62,8 @@ flutter:
 
   assets:
     - assets/
+    - assets/images/
+    - fonts/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -106,7 +108,22 @@ flutter:
           weight: 800
         - asset: fonts/Pretendard-Black.ttf
           weight: 900
-
+    - family: NotoSerifKR
+      fonts:
+        - asset: fonts/NotoSerifKR-ExtraLight.otf
+          weight: 100
+        - asset: fonts/NotoSerifKR-Light.otf
+          weight: 200
+        - asset: fonts/NotoSerifKR-Regular.otf
+          weight: 300
+        - asset: fonts/NotoSerifKR-Medium.otf
+          weight: 400
+        - asset: fonts/NotoSerifKR-SemiBold.otf
+          weight: 500
+        - asset: fonts/NotoSerifKR-Bold.otf
+          weight: 600
+        - asset: fonts/NotoSerifKR-Black.otf
+          weight: 700
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
