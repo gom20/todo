@@ -7,37 +7,38 @@ class DBHelper {
 
   Future<Database> get database async {
     if (_db != null) return _db;
-    _db = openDatabase(join(await getDatabasesPath(), 'gratitude.db'),
+    _db = openDatabase(join(await getDatabasesPath(), 'gratitude1.db'),
         onCreate: (db, version) => _createDb(db), version: 1);
     return _db;
   }
 
   static void _createDb(Database db) {
     db.execute(
-      "CREATE TABLE Gratitude(id INTEGER PRIMARY KEY, note TEXT)",
+      "CREATE TABLE Gratitude(id INTEGER PRIMARY KEY, note TEXT, resolution TEXT)",
     );
   }
 
-  Future<void> insertGratitude(Gratitude gratitude) async {
+  Future<void> insertItem(Gratitude gratitude) async {
     final db = await database;
 
     await db.insert("Gratitude", gratitude.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<List<Gratitude>> selectAllGratitude() async {
+  Future<List<Gratitude>> selectAllItems() async {
     final db = await database;
 
     final List<Map<String, dynamic>> maps = (await db.query('Gratitude'));
 
     return List.generate(maps.length, (index) => Gratitude(
         id: maps[index]['id'],
-        note: maps[index]['note']
+        note: maps[index]['note'],
+        resolution: maps[index]['resolution']
     ));
   }
 
 
-  Future<Gratitude> selectGratitude(int id) async {
+  Future<Gratitude> selectItem(int id) async {
     final db = await database;
 
     final List<Map<String, dynamic>> maps = (await db.query(
@@ -48,11 +49,12 @@ class DBHelper {
 
     return Gratitude(
         id: maps[0]['id'],
-        note: maps[0]['note']
+        note: maps[0]['note'],
+        resolution: maps[0]['resolution']
     );
   }
 
-  Future<void> deleteGratitude(int id) async {
+  Future<void> deleteItem(int id) async {
     final db = await database;
 
     await db.delete(
