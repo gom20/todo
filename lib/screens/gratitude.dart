@@ -54,7 +54,7 @@ class _GratitudeScreenState extends State<GratitudeScreen> {
                       ),
                     ),
                   ),
-                  Text("오늘, 감사한 마음을 기록해보세요.",
+                  Text("오늘 느낀 감사한 마음을 기록해보세요.",
                       style: TextStyle(
                         color: Colors.black54,
                       )
@@ -122,7 +122,6 @@ class _GratitudeScreenState extends State<GratitudeScreen> {
                         child: TextField(
                           controller: resolutionController,
                           focusNode: resolutionFocus,
-                          // controller: resolutionController,
                           keyboardType: TextInputType.multiline,
                           maxLines: 7,
                           cursorColor: Colors.brown,

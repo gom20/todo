@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:todo/db/dbHelper.dart';
-import 'package:todo/models/gratitude.dart';
+import 'package:todo/screens/account.dart';
 import 'package:todo/screens/calendar.dart';
 import 'package:todo/screens/gratitude.dart';
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -15,15 +13,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+
   static const List<Widget> _widgetOptions = <Widget>[
     GratitudeScreen(),
     CalendarScreen(),
-    Text(
-      '데이터 추출하기 기능',
-      style: optionStyle,
-    ),
+    AccountScreen()
   ];
 
   void _onItemTapped(int index) {

@@ -26,18 +26,33 @@ class _CalendarScreenState extends State<CalendarScreen> {
   );
   DateTime focusedDate = DateTime.now();
 
+  String comment = '';
+  void setComment(){
+    int today = int.parse(DateFormat('yyyyMMdd').format(DateTime.now()));
+    int selectedDay = int.parse(DateFormat('yyyyMMdd').format(selectedDate));
+    if(today == selectedDay){
+      comment = "오늘의 감사를 기록해보세요.";
+    } else if(today < selectedDay){
+      comment = "앞으로 다가올 날들을 감사함으로 채워보세요.";
+    } else {
+      comment =  "지나간 아픔과 상실 슬픔 고통은 잊으세요. ";
+    }
+  }
+
   @override
   void initState(){
     super.initState();
     dbHelper = DBHelper();
-    dbHelper.selectAllIds().then((resultList) {
-      for (var element in resultList) {
-        setState(() {
+    setState(() {
+      dbHelper.selectAllIds().then((resultList) {
+        for (var element in resultList) {
           int id = element;
           events[DateTime.parse('$id')] = [Event('id')];
-        });
-      }
+        }
+      });
+      setComment();
     });
+
   }
 
   @override
@@ -59,6 +74,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 setState((){
                   selectedDate = selectedDay;
                   focusedDate = focusedDay;
+                  setComment();
                 });
               },
               selectedDayPredicate: (DateTime day) {
@@ -108,36 +124,37 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   FutureBuilder(
                     future: dbHelper.selectItem(int.parse(DateFormat('yyyyMMdd').format(selectedDate))),
                     builder: (context, snapshot) {
-                      if(snapshot.hasData){
-                        int id = snapshot.data?.id as int;
-                        String note = snapshot.data?.note as String;
-                        String resolution = snapshot.data?.resolution as String;
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: double.infinity,
-                              margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                              child: Text("감사한 마음",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                  fontFamily: 'NotoSerifKR',
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 15,
-                                ),
-                              )
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(10),
-                              width: double.infinity,
-                              margin: EdgeInsets.fromLTRB(0, 10, 0, 30),
-                              decoration: BoxDecoration(
-                                color: Colors.white70,
-                                borderRadius: BorderRadius.circular(10),
+                    if(snapshot.connectionState == ConnectionState.done){
+                        if(snapshot.hasData) {
+                          int id = snapshot.data?.id as int;
+                          String note = snapshot.data?.note as String;
+                          String resolution = snapshot.data?.resolution as String;
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                                child: Text("감사한 마음",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontFamily: 'NotoSerifKR',
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 15,
+                                  ),
+                                )
                               ),
-                              child: Text(note)
-                            ),
-                            Container(
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                width: double.infinity,
+                                margin: EdgeInsets.fromLTRB(0, 10, 0, 30),
+                                decoration: BoxDecoration(
+                                  color: Colors.white70,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(note)
+                              ),
+                              Container(
                                 width: double.infinity,
                                 margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
                                 child: Text("나의 다짐",
@@ -148,20 +165,20 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                     fontSize: 15,
                                   ),
                                 )
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(10),
-                              width: double.infinity,
-                              margin: EdgeInsets.fromLTRB(0, 10, 0, 50),
-                              decoration: BoxDecoration(
-                                color: Colors.white70,
-                                borderRadius: BorderRadius.circular(10),
                               ),
-                              child: Text(resolution)
-                            ),
-                            TextButton(
-                              onPressed: (){
-                                showDialog(
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                width: double.infinity,
+                                margin: EdgeInsets.fromLTRB(0, 10, 0, 50),
+                                decoration: BoxDecoration(
+                                  color: Colors.white70,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(resolution)
+                              ),
+                              TextButton(
+                                onPressed: (){
+                                  showDialog(
                                     context: context,
                                     barrierDismissible: true,
                                     builder: (context) {
@@ -196,20 +213,25 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                         ],
                                       );
                                     }
-                                );
-                              },
-                              child: Text("삭제",
-                                style: TextStyle(
-                                  color: Color(0xff689972)
+                                  );
+                                },
+                                child: Text("삭제",
+                                  style: TextStyle(
+                                      color: Color(0xff689972)
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        );
+                            ],
+                          );
+                        } else {
+                          return Center(
+                            child: Text(comment)
+                          );
+                        }
                       } else {
-                        return Text('test');
+                        return Text('');
                       }
-                    },
+                    }
                   ),
                 ]
               ),
