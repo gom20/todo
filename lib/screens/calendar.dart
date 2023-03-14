@@ -16,40 +16,32 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-  late DBHelper _dbHelper ;
-  DateTime selectedDay = DateTime(
+  late DBHelper dbHelper;
+
+  Map<DateTime, List<Event>> events = {};
+  DateTime selectedDate = DateTime(
     DateTime.now().year,
     DateTime.now().month,
     DateTime.now().day,
   );
-  DateTime focusedDay = DateTime.now();
-
-  final noteController = TextEditingController();
-  final resolutionController = TextEditingController();
-  Map<DateTime, List<Event>> events = {
-    DateTime.utc(2023,3,11) : [ Event('title') ],
-    DateTime.utc(2023,3,13) : [ Event('title3') ],
-  };
+  DateTime focusedDate = DateTime.now();
 
   @override
   void initState(){
     super.initState();
-    _dbHelper = DBHelper();
-    _dbHelper.selectAllItems().then((resultList) {
+    dbHelper = DBHelper();
+    dbHelper.selectAllIds().then((resultList) {
       for (var element in resultList) {
         setState(() {
-          events[DateTime.parse('$element.id')] = [Event('test')];
+          int id = element;
+          events[DateTime.parse('$id')] = [Event('id')];
         });
-      }});
-
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Event> _getEventsForDay(DateTime day) {
-      return events[day] ?? [];
-    }
-
     return Padding(
       padding: EdgeInsets.fromLTRB(25, 25, 25, 0),
       child: Column(
@@ -57,46 +49,30 @@ class _CalendarScreenState extends State<CalendarScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            height: 50,
-            margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-            child: Text("감사 기록",
-              style: TextStyle(
-                  fontFamily: 'NotoSerifKR',
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87,
-                  fontSize: 30.0
-              ),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+            margin: EdgeInsets.fromLTRB(0, 50, 0, 0),
             child: TableCalendar(
               locale: 'ko_KR',
-              eventLoader: _getEventsForDay,
               firstDay: DateTime.utc(2010, 10, 16),
               lastDay: DateTime.utc(2030, 3, 14),
-              focusedDay: focusedDay,
-
+              focusedDay: focusedDate,
               onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
-                // 선택된 날짜의 상태를 갱신합니다.
                 setState((){
-                  this.selectedDay = selectedDay;
-                  this.focusedDay = focusedDay;
+                  selectedDate = selectedDay;
+                  focusedDate = focusedDay;
                 });
               },
               selectedDayPredicate: (DateTime day) {
-                // selectedDay 와 동일한 날짜의 모양을 바꿔줍니다.
-                return isSameDay(selectedDay, day);
+                return isSameDay(selectedDate, day);
               },
               headerStyle: HeaderStyle(
                 titleCentered: true,
                 titleTextFormatter: (date, locale) => DateFormat('yyyy.MM.dd').format(date),
                 formatButtonVisible: false,
                 titleTextStyle: TextStyle(
-                    fontSize: 30.0,
-                    // color: Color(0xff689972),
-                    fontFamily: 'NotoSerifKR',
-                    fontWeight: FontWeight.w500
+                  fontSize: 25.0,
+                  fontFamily: 'NotoSerifKR',
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
                 ),
               ),
               calendarStyle: CalendarStyle(
@@ -113,94 +89,132 @@ class _CalendarScreenState extends State<CalendarScreen> {
               ),
               calendarBuilders:
               CalendarBuilders(markerBuilder: (context, date, dynamic event) {
-                if (event.isNotEmpty) {
+                DateTime markerKey = DateTime(date.year, date.month, date.day);
+                if (events.containsKey(markerKey)) {
                   return Container(
                     width: 35,
                     decoration: BoxDecoration(
-                        color: Color(0xff689972).withOpacity(0.2),
-                        shape: BoxShape.circle),
+                      color: Color(0xff689972).withOpacity(0.2),
+                      shape: BoxShape.circle),
                   );
                 }
               }),
             ),
           ),
           Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-
-                    Container(
-                        child: FutureBuilder(
-                          future: _dbHelper.selectItem(int.parse(DateFormat('yyyyMMdd').format(selectedDay))),
-                          builder: (context, snapshot) {
-                            if(snapshot.hasData){
-                              String note = snapshot.data?.note as String;
-                              String resolution = snapshot.data?.resolution as String;
-                              return Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                      width: double.infinity,
-                                      margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                                      child: Text("그날의 감사함",
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          fontFamily: 'NotoSerifKR',
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 15,
-                                        ),
-                                      )
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  FutureBuilder(
+                    future: dbHelper.selectItem(int.parse(DateFormat('yyyyMMdd').format(selectedDate))),
+                    builder: (context, snapshot) {
+                      if(snapshot.hasData){
+                        int id = snapshot.data?.id as int;
+                        String note = snapshot.data?.note as String;
+                        String resolution = snapshot.data?.resolution as String;
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                              child: Text("감사한 마음",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontFamily: 'NotoSerifKR',
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 15,
+                                ),
+                              )
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(10),
+                              width: double.infinity,
+                              margin: EdgeInsets.fromLTRB(0, 10, 0, 30),
+                              decoration: BoxDecoration(
+                                color: Colors.white70,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(note)
+                            ),
+                            Container(
+                                width: double.infinity,
+                                margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                child: Text("나의 다짐",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontFamily: 'NotoSerifKR',
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 15,
                                   ),
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(0, 10, 0, 30),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white70,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Text(note)
-                                  ),
-                                  SizedBox(
-                                      width: double.infinity,
-                                      child: Text("그날의 다짐",
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          fontFamily: 'NotoSerifKR',
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 15,
-                                        ),
-                                      )
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(0, 10, 0, 50),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white70,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Text(resolution)
-                                  ),
-                                  TextButton(
-                                      onPressed: (){
-                                        Navigator.pushNamed(context, '/home', arguments: {
-                                          'id': int.parse(DateFormat('yyyyMMdd').format(selectedDay))
-                                        });
-                                      },
-                                      child: Text("삭제 하기")
-                                  ),
-                                ],
-                              );
-                            } else {
-                              noteController.text = '';
-                              return Text('test');
-                            }
-                          },
-                        )
-                    ),
-                  ]
-                ),
+                                )
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(10),
+                              width: double.infinity,
+                              margin: EdgeInsets.fromLTRB(0, 10, 0, 50),
+                              decoration: BoxDecoration(
+                                color: Colors.white70,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(resolution)
+                            ),
+                            TextButton(
+                              onPressed: (){
+                                showDialog(
+                                    context: context,
+                                    barrierDismissible: true,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        content: Text('기록을 삭제하시겠습니까?'),
+                                        insetPadding: const  EdgeInsets.fromLTRB(0,80,0, 80),
+                                        actions: [
+                                          TextButton(
+                                            child: Text('취소',
+                                                style: TextStyle(
+                                                    color: Color(0xff689972)
+                                                )
+                                            ),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                          TextButton(
+                                            child: Text('삭제',
+                                                style: TextStyle(
+                                                    color: Color(0xff689972)
+                                                )
+                                            ),
+                                            onPressed: () {
+                                              dbHelper.deleteItem(id);
+                                              setState(() {
+                                                events.remove(DateTime.parse('$id'));
+                                              });
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                );
+                              },
+                              child: Text("삭제",
+                                style: TextStyle(
+                                  color: Color(0xff689972)
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return Text('test');
+                      }
+                    },
+                  ),
+                ]
               ),
+            ),
           )
-
-
         ],
       ),
     );

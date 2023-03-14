@@ -37,6 +37,11 @@ class DBHelper {
     ));
   }
 
+  Future<List<int>> selectAllIds() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = (await db.rawQuery('SELECT id FROM Gratitude'));
+    return List.generate(maps.length, (index) => maps[index]['id']);
+  }
 
   Future<Gratitude> selectItem(int id) async {
     final db = await database;
