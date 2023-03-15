@@ -11,28 +11,30 @@ class GratitudeScreen extends StatefulWidget {
 }
 
 class _GratitudeScreenState extends State<GratitudeScreen> {
-  late DBHelper dbHelper;
-  TextEditingController noteController = TextEditingController();
-  TextEditingController resolutionController = TextEditingController();
-  FocusNode noteFocus = FocusNode();
-  FocusNode resolutionFocus = FocusNode();
+  late DBHelper _dbHelper;
+  int _today = int.parse(DateFormat('yyyyMMdd').format(DateTime.now()));
+
+  final TextEditingController _noteController = TextEditingController();
+  final TextEditingController _resolutionController = TextEditingController();
+  final FocusNode _noteFocus = FocusNode();
+  final FocusNode _resolutionFocus = FocusNode();
 
   @override
   void initState(){
     super.initState();
-    dbHelper = DBHelper();
+    _dbHelper = DBHelper();
+    _today = int.parse(DateFormat('yyyyMMdd').format(DateTime.now()));
   }
 
   @override
   void dispose() {
-    noteController.dispose();
-    resolutionController.dispose();
+    _noteController.dispose();
+    _resolutionController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    int today = int.parse(DateFormat('yyyyMMdd').format(DateTime.now()));
     return SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(25),
@@ -45,7 +47,7 @@ class _GratitudeScreenState extends State<GratitudeScreen> {
                     margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
                     child: Text(
                       DateFormat('yyyy.MM.dd').format(
-                          DateTime.parse('$today')),
+                          DateTime.parse('$_today')),
                       style: TextStyle(
                           fontFamily: 'NotoSerifKR',
                           fontWeight: FontWeight.w600,
@@ -62,11 +64,11 @@ class _GratitudeScreenState extends State<GratitudeScreen> {
                 ],
               ),
               FutureBuilder(
-                future: dbHelper.selectItem(today),
+                future: _dbHelper.selectItem(_today),
                 builder: (context, snapshot) {
                   if(snapshot.hasData){
-                    noteController.text = snapshot.data?.note as String;
-                    resolutionController.text = snapshot.data?.resolution as String;
+                    _noteController.text = snapshot.data?.note as String;
+                    _resolutionController.text = snapshot.data?.resolution as String;
                   }
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -90,11 +92,12 @@ class _GratitudeScreenState extends State<GratitudeScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: TextField(
-                          controller: noteController,
-                          focusNode: noteFocus,
+                          controller: _noteController,
+                          focusNode: _noteFocus,
                           // controller: noteController,
                           keyboardType: TextInputType.multiline,
                           maxLines: 7,
+                          maxLength: 200,
                           cursorColor: Colors.brown,
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -120,10 +123,11 @@ class _GratitudeScreenState extends State<GratitudeScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: TextField(
-                          controller: resolutionController,
-                          focusNode: resolutionFocus,
+                          controller: _resolutionController,
+                          focusNode: _resolutionFocus,
                           keyboardType: TextInputType.multiline,
                           maxLines: 7,
+                          maxLength: 200,
                           cursorColor: Colors.brown,
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -140,9 +144,9 @@ class _GratitudeScreenState extends State<GratitudeScreen> {
                 height: 40.0,
                 child: ElevatedButton(
                   onPressed:  () {
-                    noteFocus.unfocus();
-                    resolutionFocus.unfocus();
-                    if(noteController.text.isEmpty && resolutionController.text.isEmpty){
+                    _noteFocus.unfocus();
+                    _resolutionFocus.unfocus();
+                    if(_noteController.text.isEmpty && _resolutionController.text.isEmpty){
                       showDialog(
                           context: context,
                           barrierDismissible: true,
@@ -166,11 +170,11 @@ class _GratitudeScreenState extends State<GratitudeScreen> {
                           }
                       );
                     } else {
-                      dbHelper.insertItem(
+                      _dbHelper.insertItem(
                           Gratitude(
                               id: int.parse(DateFormat('yyyyMMdd').format(DateTime.now())),
-                              note: noteController.text,
-                              resolution: resolutionController.text
+                              note: _noteController.text,
+                              resolution: _resolutionController.text
                           )
                       ).then((value) => {
                         showDialog(

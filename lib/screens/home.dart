@@ -28,62 +28,57 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    int selectedDay = int.parse(DateFormat('yyyyMMdd').format(DateTime.now()));
-
-    final arguments = (ModalRoute
-        .of(context)
-        ?.settings
-        .arguments ?? <String, dynamic>{}) as Map;
-    final textFieldController = TextEditingController();
-
-    @override
-    void dispose() {
-      textFieldController.dispose();
-      super.dispose();
-    }
-
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          image: AssetImage('assets/images/bg-image.png'),
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Center(
-          child: _widgetOptions.elementAt(_selectedIndex),
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.edit_calendar),
-                label: "쓰기"
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_month),
-              label: '기록',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle),
-              label: '설정',
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Color(0xff689972),
-          selectedLabelStyle: TextStyle(
-            fontFamily: 'Pretendard',
-            fontWeight: FontWeight.w500,
+    return Stack(
+      children: [
+        Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            color: Color(0xffFFF1DE),
           ),
-          unselectedLabelStyle: TextStyle(
-            fontFamily: 'Pretendard',
-            fontWeight: FontWeight.w400,
-          ),
-          onTap: _onItemTapped,
         ),
-      ),
+        Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: AssetImage('assets/images/bg-image.png'),
+            ),
+          ),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Center(
+              child: _widgetOptions.elementAt(_selectedIndex),
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              items: [
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.edit_calendar),
+                    label: "감사하기"
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.calendar_month),
+                  label: '기록보기',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.account_circle),
+                  label: '설정하기',
+                ),
+              ],
+              currentIndex: _selectedIndex,
+              selectedItemColor: Color(0xff689972),
+              selectedLabelStyle: TextStyle(
+                fontWeight: FontWeight.w500,
+              ),
+              unselectedLabelStyle: TextStyle(
+                fontWeight: FontWeight.w400,
+              ),
+              onTap: _onItemTapped,
+            ),
+          ),
+        ),
+      ]
     );
   }
 }
