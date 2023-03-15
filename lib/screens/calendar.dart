@@ -30,13 +30,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
   void initState(){
     super.initState();
     _dbHelper = DBHelper();
-      _dbHelper.selectAllIds().then((resultList) {
-        for (var element in resultList) {
-          setState(() {
-            int id = element;
-            _events[DateTime.parse('$id')] = [Event('id')];
-          });
-        }
+    _dbHelper.selectAllIds().then((resultList) {
+      for (var element in resultList) {
+        setState(() {
+          int id = element;
+          _events[DateTime.parse('$id')] = [Event('id')];
+        });
+      }
     });
   }
 
@@ -124,6 +124,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                   fontFamily: 'NotoSerifKR',
                                   fontWeight: FontWeight.w500,
                                   fontSize: 15,
+                                  color: Colors.black87,
                                 ),
                               )
                             ),
@@ -135,7 +136,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                 color: Colors.white70,
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: Text(note)
+                              child: Text(note, style:TextStyle(color: Colors.black87))
                             ),
                             Container(
                               width: double.infinity,
@@ -146,6 +147,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                   fontFamily: 'NotoSerifKR',
                                   fontWeight: FontWeight.w500,
                                   fontSize: 15,
+                                  color: Colors.black87,
                                 ),
                               )
                             ),
@@ -157,7 +159,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                 color: Colors.white70,
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: Text(resolution)
+                              child: Text(resolution, style:TextStyle(color: Colors.black87))
                             ),
                             TextButton(
                               onPressed: (){

@@ -46,7 +46,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       style: TextStyle(
                           fontFamily: 'NotoSerifKR',
                           fontSize: 60,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w600,
                           color: Colors.black87
                       )
                   );
@@ -55,7 +55,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       style: TextStyle(
                           fontFamily: 'NotoSerifKR',
                           fontSize: 60,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w600,
                           color: Colors.black87
                       )
                   );
@@ -65,7 +65,7 @@ class _AccountScreenState extends State<AccountScreen> {
           ),
           Container(
               margin: EdgeInsets.fromLTRB(0, 0, 0, 200),
-              child: Text("지금까지 적은 감사 횟수입니다.")
+              child: Text("지금까지 적은 감사 횟수입니다.", style:TextStyle(color: Colors.black87))
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

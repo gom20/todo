@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
               currentIndex: _selectedIndex,
               selectedItemColor: Color(0xff689972),
               selectedLabelStyle: TextStyle(
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w400,
               ),
               unselectedLabelStyle: TextStyle(
                 fontWeight: FontWeight.w400,

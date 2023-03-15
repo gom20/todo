@@ -75,13 +75,14 @@ class _GratitudeScreenState extends State<GratitudeScreen> {
                     children: [
                       Container(
                           width: double.infinity,
-                          margin: EdgeInsets.fromLTRB(0, 50, 0, 0),
+                          margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
                           child: Text("감사한 마음",
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               fontFamily: 'NotoSerifKR',
                               fontWeight: FontWeight.w500,
                               fontSize: 15,
+                              color: Colors.black87,
                             ),
                           )
                       ),
@@ -96,7 +97,7 @@ class _GratitudeScreenState extends State<GratitudeScreen> {
                           focusNode: _noteFocus,
                           // controller: noteController,
                           keyboardType: TextInputType.multiline,
-                          maxLines: 7,
+                          maxLines: 4,
                           maxLength: 200,
                           cursorColor: Colors.brown,
                           decoration: InputDecoration(
@@ -113,6 +114,7 @@ class _GratitudeScreenState extends State<GratitudeScreen> {
                               fontFamily: 'NotoSerifKR',
                               fontWeight: FontWeight.w500,
                               fontSize: 15,
+                              color: Colors.black87,
                             ),
                           )
                       ),
@@ -126,7 +128,7 @@ class _GratitudeScreenState extends State<GratitudeScreen> {
                           controller: _resolutionController,
                           focusNode: _resolutionFocus,
                           keyboardType: TextInputType.multiline,
-                          maxLines: 7,
+                          maxLines: 4,
                           maxLength: 200,
                           cursorColor: Colors.brown,
                           decoration: InputDecoration(
